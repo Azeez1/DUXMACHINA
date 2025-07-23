@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main menu item -->
+    <menuitem id="menu_postiz_root"
+              name="POSTIZ"
+              sequence="50"
+              web_icon="postiz_integration,static/description/icon.png"/>
+    
+    <!-- Submenu item -->
+    <menuitem id="menu_postiz_iframe"
+              name="Open POSTIZ"
+              parent="menu_postiz_root"
+              action="action_postiz_iframe"
+              sequence="10"/>
+</odoo>

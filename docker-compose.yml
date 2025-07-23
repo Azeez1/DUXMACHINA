@@ -1,0 +1,98 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - odoo-db:/var/lib/postgresql/data
+    networks:
+      - odoo-postiz-network
+
+  web:
+    image: odoo:17
+    depends_on:
+      - db
+    ports:
+      - "8069:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons
+    environment:
+      - HOST=db
+      - USER=odoo
+      - PASSWORD=odoo
+    networks:
+      - odoo-postiz-network
+
+  postiz-db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: postiz
+      POSTGRES_USER: postiz
+      POSTGRES_PASSWORD: postiz_secure_password
+    volumes:
+      - postiz-db:/var/lib/postgresql/data
+    networks:
+      - odoo-postiz-network
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - odoo-postiz-network
+
+  postiz:
+    image: ghcr.io/gitroomhq/postiz-app:latest
+    depends_on:
+      - postiz-db
+      - redis
+    ports:
+      - "3000:3000"
+      - "4200:4200"
+    environment:
+      DATABASE_URL: postgresql://postiz:postiz_secure_password@postiz-db:5432/postiz
+      JWT_SECRET: sk_j8Kf3nL9mP2qR5tV7wX4yB6dG1hN8sA0cE3fK9zQ2xM5vU7
+      BACKEND_URL: http://localhost:3000
+      FRONTEND_URL: http://localhost:4200
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:3000
+      REDIS_URL: redis://redis:6379
+    networks:
+      - odoo-postiz-network
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=false
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - NODE_ENV=development
+      - N8N_LOG_LEVEL=info
+      - WEBHOOK_URL=http://localhost:5678
+      - GENERIC_TIMEZONE=America/New_York
+      - DB_TYPE=sqlite
+      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
+      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
+      - EXECUTIONS_DATA_SAVE_ON_PROGRESS=true
+      - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
+      - N8N_DIAGNOSTICS_ENABLED=false
+    volumes:
+      - n8n-data:/home/node/.n8n
+    networks:
+      - odoo-postiz-network
+
+volumes:
+  odoo-db:
+  postiz-db:
+  n8n-data:
+
+networks:
+  odoo-postiz-network:
+    driver: bridge

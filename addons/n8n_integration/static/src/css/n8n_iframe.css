@@ -1,0 +1,43 @@
+.o_n8n_iframe_container {
+    height: calc(100vh - 50px);
+    width: 100%;
+    position: relative;
+    background-color: #f5f5f5;
+}
+
+.o_n8n_iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: white;
+}
+
+.o_n8n_loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #666;
+}
+
+.o_n8n_loading i {
+    color: #ff6d5a;
+    margin-bottom: 10px;
+}
+
+.o_n8n_loading p {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* Ensure full height in Odoo backend */
+.o_action_manager .o_n8n_iframe_container {
+    height: calc(100vh - 46px);
+}
+
+/* Remove any padding that might interfere */
+.o_content .o_n8n_iframe_container {
+    padding: 0;
+    margin: 0;
+}

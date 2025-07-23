@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main menu item -->
+    <menuitem id="menu_n8n_root"
+              name="n8n Workflows"
+              sequence="51"
+              web_icon="n8n_integration,static/description/icon.png"/>
+    
+    <!-- Submenu items -->
+    <menuitem id="menu_n8n_workflows"
+              name="Open n8n"
+              parent="menu_n8n_root"
+              action="action_n8n_iframe"
+              sequence="10"/>
+    
+    <!-- Optional: Quick access to specific n8n features -->
+    <menuitem id="menu_n8n_create_workflow"
+              name="Create Workflow"
+              parent="menu_n8n_root"
+              action="action_n8n_create_workflow"
+              sequence="20"/>
+    
+    <menuitem id="menu_n8n_executions"
+              name="Workflow Executions"
+              parent="menu_n8n_root"
+              action="action_n8n_executions"
+              sequence="30"/>
+</odoo>
