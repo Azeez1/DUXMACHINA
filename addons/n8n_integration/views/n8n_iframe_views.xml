@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main n8n Iframe Action -->
+    <record id="action_n8n_iframe" model="ir.actions.client">
+        <field name="name">n8n Workflows</field>
+        <field name="tag">n8n_iframe</field>
+        <field name="target">main</field>
+    </record>
+    
+    <!-- Create Workflow Action (opens n8n with new workflow) -->
+    <record id="action_n8n_create_workflow" model="ir.actions.client">
+        <field name="name">Create n8n Workflow</field>
+        <field name="tag">n8n_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'n8n_path': '/workflow/new'}</field>
+    </record>
+    
+    <!-- Executions Action (opens n8n executions page) -->
+    <record id="action_n8n_executions" model="ir.actions.client">
+        <field name="name">Workflow Executions</field>
+        <field name="tag">n8n_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'n8n_path': '/executions'}</field>
+    </record>
+    
+    <!-- Alternative: Window Action with URL -->
+    <record id="action_n8n_external" model="ir.actions.act_url">
+        <field name="name">Open n8n in New Tab</field>
+        <field name="url">http://localhost:5678</field>
+        <field name="target">new</field>
+    </record>
+    
+    <!-- Template for full screen iframe (if needed) -->
+    <template id="n8n_iframe_template" name="n8n Iframe">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        overflow: hidden;
+                    }
+                    .o_action_manager {
+                        height: 100vh !important;
+                    }
+                    #n8n_iframe_container {
+                        height: 100vh;
+                        width: 100%;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        z-index: 1000;
+                    }
+                    #n8n_iframe_container iframe {
+                        width: 100%;
+                        height: 100%;
+                        border: none;
+                    }
+                </style>
+            </t>
+            <div id="n8n_iframe_container">
+                <iframe src="http://localhost:5678"
+                        id="n8n_iframe"
+                        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"/>
+            </div>
+        </t>
+    </template>
+</odoo>
