@@ -7,7 +7,7 @@ from odoo.http import request
 def get_suna_config(self):
     """Return Suna AI configuration for the current user."""
     return {
-        'suna_url': 'http://localhost:3001',
+        'suna_url': 'http://localhost:3002/login',
         'user_name': request.env.user.name,
         'user_email': request.env.user.email,
         'user_id': request.env.user.id,
