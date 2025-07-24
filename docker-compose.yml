@@ -45,6 +45,14 @@ services:
     networks:
       - odoo-postiz-network
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - odoo-postiz-network
+
   postiz:
     image: ghcr.io/gitroomhq/postiz-app:latest
     depends_on:
@@ -90,6 +98,9 @@ services:
 
   suna:
     image: ghcr.io/kortix-ai/suna/suna-backend:latest
+    depends_on:
+      - redis
+      - rabbitmq
     ports:
       - "3001:3000"
     environment:
@@ -105,6 +116,63 @@ services:
       - QSTASH_CURRENT_SIGNING_KEY=${QSTASH_CURRENT_SIGNING_KEY}
       - QSTASH_NEXT_SIGNING_KEY=${QSTASH_NEXT_SIGNING_KEY}
       - WEBHOOK_BASE_URL=${WEBHOOK_BASE_URL}
+      - ENV_MODE=local
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - MODEL_TO_USE=anthropic/claude-sonnet-4-20250514
+      - NEXT_PUBLIC_URL=http://localhost:3002
+      - FIRECRAWL_URL=https://api.firecrawl.dev
+      - DAYTONA_SERVER_URL=https://app.daytona.io/api
+      - DAYTONA_TARGET=us
+      - QSTASH_URL=https://qstash.upstash.io
+    networks:
+      - odoo-postiz-network
+
+  suna-worker:
+    image: ghcr.io/kortix-ai/suna/suna-backend:latest
+    command: dramatiq run_agent_background
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      - DAYTONA_API_KEY=${DAYTONA_API_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY}
+      - QSTASH_TOKEN=${QSTASH_TOKEN}
+      - QSTASH_CURRENT_SIGNING_KEY=${QSTASH_CURRENT_SIGNING_KEY}
+      - QSTASH_NEXT_SIGNING_KEY=${QSTASH_NEXT_SIGNING_KEY}
+      - WEBHOOK_BASE_URL=${WEBHOOK_BASE_URL}
+      - ENV_MODE=local
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - MODEL_TO_USE=anthropic/claude-sonnet-4-20250514
+      - NEXT_PUBLIC_URL=http://localhost:3002
+      - FIRECRAWL_URL=https://api.firecrawl.dev
+      - DAYTONA_SERVER_URL=https://app.daytona.io/api
+      - DAYTONA_TARGET=us
+      - QSTASH_URL=https://qstash.upstash.io
+    networks:
+      - odoo-postiz-network
+
+  suna-frontend:
+    image: ghcr.io/kortix-ai/suna/suna-frontend:latest
+    ports:
+      - "3002:3000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
+      - NEXT_PUBLIC_URL=http://localhost:3002
+      - NEXT_PUBLIC_ENV_MODE=LOCAL
     networks:
       - odoo-postiz-network
 
