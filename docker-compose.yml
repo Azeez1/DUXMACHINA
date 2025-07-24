@@ -88,6 +88,18 @@ services:
     networks:
       - odoo-postiz-network
 
+  suna:
+    image: ghcr.io/kortix-ai/suna/suna-backend:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - DAYTONA_API_KEY=${DAYTONA_API_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    networks:
+      - odoo-postiz-network
+
 volumes:
   odoo-db:
   postiz-db:
