@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_suna_root"
+              name="Suna AI"
+              sequence="52"
+              web_icon="suna_integration,static/description/icon.png"/>
+
+    <menuitem id="menu_suna_agent"
+              name="AI Agent"
+              parent="menu_suna_root"
+              action="action_suna_agent"
+              sequence="10"/>
+
+    <menuitem id="menu_suna_research"
+              name="Research Assistant"
+              parent="menu_suna_root"
+              action="action_suna_research"
+              sequence="20"/>
+
+    <menuitem id="menu_suna_automation"
+              name="Task Automation"
+              parent="menu_suna_root"
+              action="action_suna_automation"
+              sequence="30"/>
+</odoo>

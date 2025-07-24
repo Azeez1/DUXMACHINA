@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_suna_iframe" model="ir.actions.client">
+        <field name="name">Suna AI</field>
+        <field name="tag">suna_iframe</field>
+        <field name="target">main</field>
+    </record>
+
+    <record id="action_suna_agent" model="ir.actions.client">
+        <field name="name">AI Agent</field>
+        <field name="tag">suna_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'suna_path': '/agent'}</field>
+    </record>
+
+    <record id="action_suna_research" model="ir.actions.client">
+        <field name="name">Research Assistant</field>
+        <field name="tag">suna_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'suna_path': '/research'}</field>
+    </record>
+
+    <record id="action_suna_automation" model="ir.actions.client">
+        <field name="name">Task Automation</field>
+        <field name="tag">suna_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'suna_path': '/automation'}</field>
+    </record>
+</odoo>
