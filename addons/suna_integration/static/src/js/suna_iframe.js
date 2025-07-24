@@ -30,7 +30,7 @@ class SunaIframe extends Component {
         });
 
         // Default Suna URL
-        this.sunaUrl = "http://localhost:3002";
+        this.sunaUrl = "http://localhost:3002/login";
 
         onWillStart(async () => {
             await this.loadSunaConfig();
