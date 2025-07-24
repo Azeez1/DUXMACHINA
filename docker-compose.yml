@@ -97,7 +97,7 @@ services:
       - odoo-postiz-network
 
   suna:
-    image: ghcr.io/kortix-ai/suna/suna-backend:latest
+    image: ghcr.io/suna-ai/suna-backend:latest
     depends_on:
       - redis
       - rabbitmq
@@ -131,7 +131,7 @@ services:
       - odoo-postiz-network
 
   suna-worker:
-    image: ghcr.io/kortix-ai/suna/suna-backend:latest
+    image: ghcr.io/suna-ai/suna-backend:latest
     command: dramatiq run_agent_background
     depends_on:
       - redis
@@ -164,7 +164,7 @@ services:
       - odoo-postiz-network
 
   suna-frontend:
-    image: ghcr.io/kortix-ai/suna/suna-frontend:latest
+    image: suna-frontend:latest
     ports:
       - "3002:3000"
     environment:
