@@ -127,12 +127,13 @@ services:
       - DAYTONA_SERVER_URL=https://app.daytona.io/api
       - DAYTONA_TARGET=us
       - QSTASH_URL=https://qstash.upstash.io
+      - RAPID_API_KEY=${RAPID_API_KEY}
     networks:
       - odoo-postiz-network
 
   suna-worker:
     image: ghcr.io/suna-ai/suna-backend:latest
-    command: dramatiq run_agent_background
+    command: python -m dramatiq.cli run_agent_background
     depends_on:
       - redis
       - rabbitmq
