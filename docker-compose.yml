@@ -20,6 +20,7 @@ services:
       - "8069:8069"
     volumes:
       - ./addons:/mnt/extra-addons
+      - odoo-web:/var/lib/odoo
     environment:
       - HOST=db
       - USER=odoo
@@ -40,6 +41,7 @@ services:
 
   redis:
     image: redis:alpine
+    container_name: redis  # ADD THIS LINE
     ports:
       - "6379:6379"
     networks:
@@ -191,6 +193,7 @@ volumes:
   odoo-db:
   postiz-db:
   n8n-data:
+  odoo-web:
 
 networks:
   odoo-postiz-network:

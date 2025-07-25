@@ -30,7 +30,7 @@ class SunaIframe extends Component {
         });
 
         // Default Suna URL
-        this.sunaUrl = "http://localhost:3002/login";
+        this.sunaUrl = "http://localhost:3000/dashboard";
 
         onWillStart(async () => {
             await this.loadSunaConfig();
@@ -67,7 +67,7 @@ class SunaIframe extends Component {
     }
 
     handleSunaMessage(event) {
-        if (event.origin !== "http://localhost:3002") return;
+        if (event.origin !== "http://localhost:3000") return;
         console.log("Message from Suna:", event.data);
     }
 }
