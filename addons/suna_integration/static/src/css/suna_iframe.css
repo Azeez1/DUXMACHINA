@@ -39,3 +39,35 @@
     padding: 0;
     margin: 0;
 }
+
+/* DUX MACHINA Branding Overlay for Suna - ADD AT END OF FILE */
+.o_suna_iframe_container {
+    position: relative !important;
+}
+
+/* Hide Suna branding area */
+.o_suna_iframe_container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 65px;
+    background: #1a1a2e;
+    z-index: 999;
+}
+
+/* Add DUX MACHINA branding */
+.o_suna_iframe_container::before {
+    content: "\u26A1 DUX MACHINA";
+    position: absolute;
+    top: 18px;
+    left: 25px;
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+    letter-spacing: 2px;
+    z-index: 1000;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
