@@ -18,6 +18,7 @@
     'assets': {
         'web.assets_backend': [
             'postiz_integration/static/src/js/postiz_iframe.js',
+            'postiz_integration/static/src/css/postiz_iframe.css',
         ],
     },
     'installable': True,
