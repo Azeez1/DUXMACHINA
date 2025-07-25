@@ -59,14 +59,14 @@ services:
       - postiz-db
       - redis
     ports:
-      - "3000:3000"
+      - "3005:3000"
       - "4200:4200"
     environment:
       DATABASE_URL: postgresql://postiz:postiz_secure_password@postiz-db:5432/postiz
       JWT_SECRET: sk_j8Kf3nL9mP2qR5tV7wX4yB6dG1hN8sA0cE3fK9zQ2xM5vU7
-      BACKEND_URL: http://localhost:3000
+      BACKEND_URL:  http://localhost:3005
       FRONTEND_URL: http://localhost:4200
-      NEXT_PUBLIC_BACKEND_URL: http://localhost:3000
+      NEXT_PUBLIC_BACKEND_URL:  http://localhost:3005
       REDIS_URL: redis://redis:6379
     networks:
       - odoo-postiz-network
@@ -102,9 +102,11 @@ services:
       - redis
       - rabbitmq
     ports:
-      - "3001:3000"
+      - "8000:8000"
     environment:
       - DAYTONA_API_KEY=${DAYTONA_API_KEY}
+      - MCP_CREDENTIAL_ENCRYPTION_KEY=2KoYUnFYZYxR-9KjihFe0F2lPhS4HIJj1NWBxu3qz_s=
+      - CREDENTIAL_ENCRYPTION_KEY=2KoYUnFYZYxR-9KjihFe0F2lPhS4HIJj1NWBxu3qz_s=
       - SUPABASE_URL=${SUPABASE_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
@@ -121,7 +123,48 @@ services:
       - REDIS_PORT=6379
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
-      - MODEL_TO_USE=anthropic/claude-sonnet-4-20250514
+      - MODEL_TO_USE=claude-3-opus-20240229
+      - NEXT_PUBLIC_URL=http://localhost:3002
+      - FIRECRAWL_URL=https://api.firecrawl.dev
+      - DAYTONA_SERVER_URL=https://app.daytona.io/api
+      - DAYTONA_TARGET=us
+      - QSTASH_URL=https://qstash.upstash.io
+      - RAPID_API_KEY=${RAPID_API_KEY}
+      - CORS_ORIGINS=*
+      - CORS_ALLOW_ORIGINS=*
+      - BACKEND_CORS_ORIGINS=["http://localhost:3002","http://localhost:8069"]
+      - HOST=0.0.0.0  # ADD THIS
+      - PORT=8000     # ADD THIS
+    networks:
+      - odoo-postiz-network
+
+  suna-worker:
+    image: ghcr.io/suna-ai/suna-backend:latest
+    command: sh -c "cd /app && /app/.venv/bin/python -m dramatiq run_agent_background --processes 1 --threads 1"
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      - DAYTONA_API_KEY=${DAYTONA_API_KEY}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - MCP_CREDENTIAL_ENCRYPTION_KEY=2KoYUnFYZYxR-9KjihFe0F2lPhS4HIJj1NWBxu3qz_s=
+      - CREDENTIAL_ENCRYPTION_KEY=2KoYUnFYZYxR-9KjihFe0F2lPhS4HIJj1NWBxu3qz_s=
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY}
+      - QSTASH_TOKEN=${QSTASH_TOKEN}
+      - QSTASH_CURRENT_SIGNING_KEY=${QSTASH_CURRENT_SIGNING_KEY}
+      - QSTASH_NEXT_SIGNING_KEY=${QSTASH_NEXT_SIGNING_KEY}
+      - WEBHOOK_BASE_URL=${WEBHOOK_BASE_URL}
+      - ENV_MODE=local
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - MODEL_TO_USE=claude-3-opus-20240229
       - NEXT_PUBLIC_URL=http://localhost:3002
       - FIRECRAWL_URL=https://api.firecrawl.dev
       - DAYTONA_SERVER_URL=https://app.daytona.io/api
@@ -131,48 +174,15 @@ services:
     networks:
       - odoo-postiz-network
 
-  suna-worker:
-    image: ghcr.io/suna-ai/suna-backend:latest
-    command: python -m dramatiq.cli run_agent_background
-    depends_on:
-      - redis
-      - rabbitmq
-    environment:
-      - DAYTONA_API_KEY=${DAYTONA_API_KEY}
-      - SUPABASE_URL=${SUPABASE_URL}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
-      - TAVILY_API_KEY=${TAVILY_API_KEY}
-      - FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY}
-      - QSTASH_TOKEN=${QSTASH_TOKEN}
-      - QSTASH_CURRENT_SIGNING_KEY=${QSTASH_CURRENT_SIGNING_KEY}
-      - QSTASH_NEXT_SIGNING_KEY=${QSTASH_NEXT_SIGNING_KEY}
-      - WEBHOOK_BASE_URL=${WEBHOOK_BASE_URL}
-      - ENV_MODE=local
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - MODEL_TO_USE=anthropic/claude-sonnet-4-20250514
-      - NEXT_PUBLIC_URL=http://localhost:3002
-      - FIRECRAWL_URL=https://api.firecrawl.dev
-      - DAYTONA_SERVER_URL=https://app.daytona.io/api
-      - DAYTONA_TARGET=us
-      - QSTASH_URL=https://qstash.upstash.io
-    networks:
-      - odoo-postiz-network
-
   suna-frontend:
     image: suna-frontend:latest
     ports:
-      - "3002:3000"
+      - "3000:3000"
     environment:
       - NEXT_PUBLIC_SUPABASE_URL=${SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
-      - NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
-      - NEXT_PUBLIC_URL=http://localhost:3002
+      - NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+      - NEXT_PUBLIC_URL=http://localhost:3000
       - NEXT_PUBLIC_ENV_MODE=LOCAL
     networks:
       - odoo-postiz-network
