@@ -28,3 +28,36 @@
     z-index: 1000;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
+
+/* DUX MACHINA Black & Gold Branding for POSTIZ */
+.o_postiz_iframe_container {
+    position: relative !important;
+}
+
+/* Black overlay - adjusted for POSTIZ layout */
+.o_postiz_iframe_container::after {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    width: 200px;
+    height: 50px;
+    background: #000000;
+    z-index: 999;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Gold DUX MACHINA text */
+.o_postiz_iframe_container::before {
+    content: "\u26A1 DUX MACHINA";
+    position: absolute;
+    top: 28px;
+    left: 35px;
+    color: #FFD700;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    z-index: 1000;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
