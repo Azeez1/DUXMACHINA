@@ -189,11 +189,45 @@ services:
     networks:
       - odoo-postiz-network
 
+  matomo-db:
+    image: mariadb:10.11
+    environment:
+      MYSQL_ROOT_PASSWORD: matomo_root_password
+      MYSQL_DATABASE: matomo
+      MYSQL_USER: matomo
+      MYSQL_PASSWORD: matomo_secure_password
+    command: --max-allowed-packet=64MB
+    volumes:
+      - matomo-db:/var/lib/mysql
+    networks:
+      - odoo-postiz-network
+
+  matomo:
+    image: matomo:latest
+    depends_on:
+      - matomo-db
+    ports:
+      - "8080:80"
+    environment:
+      MATOMO_DATABASE_HOST: matomo-db
+      MATOMO_DATABASE_ADAPTER: mysql
+      MATOMO_DATABASE_TABLES_PREFIX: matomo_
+      MATOMO_DATABASE_USERNAME: matomo
+      MATOMO_DATABASE_PASSWORD: matomo_secure_password
+      MATOMO_DATABASE_DBNAME: matomo
+      PHP_MEMORY_LIMIT: 256M
+    volumes:
+      - matomo-data:/var/www/html
+    networks:
+      - odoo-postiz-network
+
 volumes:
   odoo-db:
   postiz-db:
   n8n-data:
   odoo-web:
+  matomo-db:
+  matomo-data:
 
 networks:
   odoo-postiz-network:
