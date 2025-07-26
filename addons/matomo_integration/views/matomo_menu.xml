@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_matomo_root"
+              name="Matomo Analytics"
+              sequence="53"
+              action="action_matomo_iframe"/>
+</odoo>
