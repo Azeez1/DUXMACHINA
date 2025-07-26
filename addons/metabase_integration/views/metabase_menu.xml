@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_metabase_root"
+              name="Metabase Business Intelligence"
+              sequence="54"
+              action="action_metabase_iframe"/>
+</odoo>
