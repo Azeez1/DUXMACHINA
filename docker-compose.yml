@@ -221,6 +221,18 @@ services:
     networks:
       - odoo-postiz-network
 
+  metabase:
+    image: metabase/metabase:latest
+    ports:
+      - "3030:3000"
+    environment:
+      MB_JETTY_PORT: 3000
+      JAVA_TIMEZONE: America/New_York
+    volumes:
+      - metabase-data:/metabase.db
+    networks:
+      - odoo-postiz-network
+
 volumes:
   odoo-db:
   postiz-db:
@@ -228,6 +240,7 @@ volumes:
   odoo-web:
   matomo-db:
   matomo-data:
+  metabase-data:
 
 networks:
   odoo-postiz-network:
