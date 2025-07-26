@@ -216,8 +216,11 @@ services:
       MATOMO_DATABASE_PASSWORD: matomo_secure_password
       MATOMO_DATABASE_DBNAME: matomo
       PHP_MEMORY_LIMIT: 256M
+    command: >
+      bash -c "/usr/local/bin/enable-matomo-iframe.sh && docker-entrypoint.sh apache2-foreground"
     volumes:
       - matomo-data:/var/www/html
+      - ./scripts/enable-matomo-iframe.sh:/usr/local/bin/enable-matomo-iframe.sh:ro
     networks:
       - odoo-postiz-network
 
