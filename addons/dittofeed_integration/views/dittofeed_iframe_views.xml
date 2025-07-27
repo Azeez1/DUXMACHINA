@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_dittofeed_iframe" model="ir.actions.client">
+        <field name="name">Dittofeed Dashboard</field>
+        <field name="tag">dittofeed_iframe</field>
+        <field name="target">main</field>
+    </record>
+
+    <record id="action_dittofeed_journeys" model="ir.actions.client">
+        <field name="name">Journey Builder</field>
+        <field name="tag">dittofeed_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'dittofeed_path': '/journeys'}</field>
+    </record>
+
+    <record id="action_dittofeed_segments" model="ir.actions.client">
+        <field name="name">Segments</field>
+        <field name="tag">dittofeed_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'dittofeed_path': '/segments'}</field>
+    </record>
+
+    <record id="action_dittofeed_templates" model="ir.actions.client">
+        <field name="name">Templates</field>
+        <field name="tag">dittofeed_iframe</field>
+        <field name="target">main</field>
+        <field name="context">{'dittofeed_path': '/templates'}</field>
+    </record>
+</odoo>
