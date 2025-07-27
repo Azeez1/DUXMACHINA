@@ -202,8 +202,6 @@ services:
       MB_SITE_URL: "http://localhost:3030"
     volumes:
       - metabase-data:/metabase.db
-      - ./metabase-init.sh:/metabase-init.sh
-    command: ["/bin/bash", "/metabase-init.sh"]
     networks:
       - odoo-postiz-network
 
