@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <menuitem id="menu_dittofeed_root"
-              name="Dittofeed Customer Engagement"
-              sequence="53"
-              action="action_dittofeed_iframe"/>
-</odoo>
