@@ -206,7 +206,7 @@ services:
       - odoo-postiz-network
 
   dittofeed:
-    image: dittofeed/dittofeed:latest
+    image: dittofeed/dittofeed-lite:v0.22.0
     container_name: dittofeed
     depends_on:
       - dittofeed-postgres
