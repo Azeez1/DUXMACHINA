@@ -9,7 +9,7 @@ class MetabaseController(http.Controller):
     def get_metabase_config(self):
         """Return Metabase configuration for the current user."""
         return {
-            'metabase_url': 'http://localhost:3030',
+            'metabase_url': 'http://localhost:3031',
             'user_name': request.env.user.name,
             'user_email': request.env.user.email,
             'user_id': request.env.user.id,

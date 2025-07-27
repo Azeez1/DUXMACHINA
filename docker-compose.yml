@@ -205,6 +205,19 @@ services:
     networks:
       - odoo-postiz-network
 
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "3031:3031"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+      - metabase
+    networks:
+      - odoo-postiz-network
+
 volumes:
   odoo-db:
   postiz-db:
