@@ -231,6 +231,7 @@ services:
     environment:
       MB_JETTY_PORT: 3000
       JAVA_TIMEZONE: America/New_York
+      MB_EMBEDDING_APP_ORIGINS: http://localhost:8069
     volumes:
       - metabase-data:/metabase.db
     networks:

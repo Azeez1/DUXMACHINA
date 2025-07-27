@@ -12,6 +12,7 @@ class MetabaseIframe extends Component {
                 <p>Loading Metabase...</p>
             </div>
             <iframe
+                t-if="metabaseUrl"
                 t-att-src="metabaseUrl"
                 class="o_metabase_iframe"
                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads allow-storage-access-by-user-activation"
@@ -24,13 +25,8 @@ class MetabaseIframe extends Component {
     setup() {
         this.rpc = useService("rpc");
         this.notification = useService("notification");
-        this.state = useState({
-            loading: true,
-            error: false
-        });
-
-        // Default Metabase URL
-        this.metabaseUrl = "http://localhost:3030";
+        this.state = useState({ loading: true });
+        this.metabaseUrl = useState({});
 
         onWillStart(async () => {
             await this.loadMetabaseConfig();
@@ -41,34 +37,29 @@ class MetabaseIframe extends Component {
         try {
             const config = await this.rpc("/metabase/config", {});
             if (config.metabase_url) {
-                this.metabaseUrl = config.metabase_url;
+                this.metabaseUrl.src = config.metabase_url;
+            } else {
+                throw new Error("Metabase URL not found in config.");
             }
         } catch (error) {
             console.error("Failed to load Metabase configuration:", error);
-            this.notification.add("Failed to load Metabase configuration", {
-                type: "warning"
+            this.notification.add("Could not load Metabase configuration from the server.", {
+                type: "danger"
             });
+            this.state.loading = false;
         }
     }
 
     onIframeLoad() {
         this.state.loading = false;
         console.log("Metabase iframe loaded successfully");
-
-        window.addEventListener("message", this.handleMetabaseMessage.bind(this));
     }
 
     onIframeError() {
         this.state.loading = false;
-        this.state.error = true;
-        this.notification.add("Failed to load Metabase. Please check if the service is running.", {
+        this.notification.add("Failed to load Metabase. Check service and embedding settings.", {
             type: "danger"
         });
-    }
-
-    handleMetabaseMessage(event) {
-        if (event.origin !== "http://localhost:3030") return;
-        console.log("Message from Metabase:", event.data);
     }
 }
 
