@@ -207,12 +207,115 @@ services:
     networks:
       - odoo-postiz-network
 
+  # Dittofeed PostgreSQL Database
+  dittofeed-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: dittofeed
+      POSTGRES_USER: dittofeed
+      POSTGRES_PASSWORD: dittofeed_secure_password
+    volumes:
+      - dittofeed-db:/var/lib/postgresql/data
+    networks:
+      - odoo-postiz-network
+
+  # Dittofeed ClickHouse Database
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.11
+    environment:
+      CLICKHOUSE_DB: dittofeed
+      CLICKHOUSE_USER: dittofeed
+      CLICKHOUSE_PASSWORD: dittofeed_clickhouse_password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    networks:
+      - odoo-postiz-network
+
+  # Dittofeed Temporal
+  temporal:
+    image: temporalio/auto-setup:1.22.3
+    depends_on:
+      - dittofeed-db
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=dittofeed
+      - POSTGRES_PWD=dittofeed_secure_password
+      - POSTGRES_SEEDS=dittofeed-db
+    ports:
+      - "7233:7233"
+    networks:
+      - odoo-postiz-network
+
+  # Dittofeed Admin API
+  dittofeed-admin-api:
+    image: dittofeed/dittofeed-admin-api:v0.14.0
+    depends_on:
+      - dittofeed-db
+      - clickhouse
+      - temporal
+    environment:
+      DATABASE_URL: postgresql://dittofeed:dittofeed_secure_password@dittofeed-db:5432/dittofeed
+      CLICKHOUSE_HOST: http://clickhouse:8123
+      CLICKHOUSE_USER: dittofeed
+      CLICKHOUSE_PASSWORD: dittofeed_clickhouse_password
+      TEMPORAL_ADDRESS: temporal:7233
+      AUTH_MODE: single_tenant
+      SECRET_KEY: your_secret_key_here_32_chars_min
+      WORKSPACE_ID: default-workspace
+      WORKSPACE_NAME: "Default Workspace"
+      NODE_ENV: production
+      BOOTSTRAP_ENABLED: "true"
+    ports:
+      - "3007:3001"
+    networks:
+      - odoo-postiz-network
+
+  # Dittofeed Dashboard
+  dittofeed-dashboard:
+    image: dittofeed/dittofeed-dashboard:v0.14.0
+    depends_on:
+      - dittofeed-admin-api
+    environment:
+      NEXT_PUBLIC_API_BASE: http://localhost:3007/api
+      NEXT_PUBLIC_WORKSPACE_ID: default-workspace
+      NEXT_PUBLIC_AUTH_MODE: single_tenant
+    ports:
+      - "3006:3000"
+    networks:
+      - odoo-postiz-network
+
+  # Dittofeed Worker
+  dittofeed-worker:
+    image: dittofeed/dittofeed-worker:v0.14.0
+    depends_on:
+      - dittofeed-db
+      - clickhouse
+      - temporal
+    environment:
+      DATABASE_URL: postgresql://dittofeed:dittofeed_secure_password@dittofeed-db:5432/dittofeed
+      CLICKHOUSE_HOST: http://clickhouse:8123
+      CLICKHOUSE_USER: dittofeed
+      CLICKHOUSE_PASSWORD: dittofeed_clickhouse_password
+      TEMPORAL_ADDRESS: temporal:7233
+      SECRET_KEY: your_secret_key_here_32_chars_min
+      WORKSPACE_ID: default-workspace
+      NODE_ENV: production
+    networks:
+      - odoo-postiz-network
+
 volumes:
   odoo-db:
   postiz-db:
   n8n-data:
   odoo-web:
   metabase-data:
+  dittofeed-db:
+  clickhouse-data:
 
 networks:
   odoo-postiz-network:
