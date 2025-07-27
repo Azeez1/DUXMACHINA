@@ -26,7 +26,9 @@ class MetabaseIframe extends Component {
         this.rpc = useService("rpc");
         this.notification = useService("notification");
         this.state = useState({ loading: true });
-        this.metabaseUrl = useState({});
+        // Store the URL as a simple string rather than an object
+        // so it can be bound directly to the iframe `src` attribute.
+        this.metabaseUrl = null;
 
         onWillStart(async () => {
             await this.loadMetabaseConfig();
@@ -37,7 +39,8 @@ class MetabaseIframe extends Component {
         try {
             const config = await this.rpc("/metabase/config", {});
             if (config.metabase_url) {
-                this.metabaseUrl.src = config.metabase_url;
+                // Save the retrieved URL so it can be bound directly to the iframe
+                this.metabaseUrl = config.metabase_url;
             } else {
                 throw new Error("Metabase URL not found in config.");
             }
