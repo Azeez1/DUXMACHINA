@@ -205,6 +205,65 @@ services:
     networks:
       - odoo-postiz-network
 
+  dittofeed:
+    image: dittofeed/dittofeed:latest
+    container_name: dittofeed
+    depends_on:
+      - dittofeed-postgres
+      - dittofeed-clickhouse
+      - dittofeed-temporal
+    ports:
+      - "3210:3000"  # Map internal 3000 to external 3210
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:password@dittofeed-postgres:5432/dittofeed?connect_timeout=60
+      CLICKHOUSE_HOST: http://dittofeed-clickhouse:8123
+      TEMPORAL_ADDRESS: dittofeed-temporal:7233
+      SECRET_KEY: ${DITTOFEED_SECRET_KEY:-k7u5yess0s1pvnhq8gqjr7bz6q4p5bwc}
+      PASSWORD: ${DITTOFEED_PASSWORD:-dittofeed123}
+      AUTH_MODE: single-tenant
+      WORKSPACE_NAME: DuxMachina
+      DASHBOARD_API_BASE: http://localhost:3210
+    networks:
+      - odoo-postiz-network
+
+  dittofeed-postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dittofeed
+    volumes:
+      - dittofeed-postgres:/var/lib/postgresql/data
+    networks:
+      - odoo-postiz-network
+
+  dittofeed-clickhouse:
+    image: clickhouse/clickhouse-server:23.7
+    volumes:
+      - dittofeed-clickhouse-data:/var/lib/clickhouse
+      - dittofeed-clickhouse-log:/var/log/clickhouse-server
+    environment:
+      CLICKHOUSE_DB: dittofeed
+      CLICKHOUSE_USER: dittofeed
+      CLICKHOUSE_PASSWORD: password
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    networks:
+      - odoo-postiz-network
+
+  dittofeed-temporal:
+    image: temporalio/auto-setup:1.22.3
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PWD=password
+      - POSTGRES_SEEDS=dittofeed-postgres
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+    volumes:
+      - dittofeed-temporal:/etc/temporal
+    networks:
+      - odoo-postiz-network
+
   nginx:
     image: nginx:alpine
     ports:
@@ -224,6 +283,10 @@ volumes:
   n8n-data:
   odoo-web:
   metabase-data:
+  dittofeed-postgres:
+  dittofeed-clickhouse-data:
+  dittofeed-clickhouse-log:
+  dittofeed-temporal:
 
 networks:
   odoo-postiz-network:

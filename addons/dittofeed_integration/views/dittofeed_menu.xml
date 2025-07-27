@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_dittofeed_root"
+              name="Dittofeed Engagement"
+              sequence="55"
+              action="action_dittofeed_iframe"/>
+
+    <menuitem id="menu_dittofeed_journeys"
+              name="Journeys"
+              parent="menu_dittofeed_root"
+              action="action_dittofeed_journeys"
+              sequence="10"/>
+
+    <menuitem id="menu_dittofeed_segments"
+              name="Segments"
+              parent="menu_dittofeed_root"
+              action="action_dittofeed_segments"
+              sequence="20"/>
+
+    <menuitem id="menu_dittofeed_templates"
+              name="Templates"
+              parent="menu_dittofeed_root"
+              action="action_dittofeed_templates"
+              sequence="30"/>
+</odoo>
