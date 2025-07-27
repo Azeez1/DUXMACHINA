@@ -205,9 +205,9 @@ services:
     networks:
       - odoo-postiz-network
 
-  yamldittofeed:
+  dittofeed:
     image: dittofeed/dittofeed-lite:v0.22.0
-    container_name: yamldittofeed
+    container_name: dittofeed
     depends_on:
       - dittofeed-postgres
       - dittofeed-clickhouse
